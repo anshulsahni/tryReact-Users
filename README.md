@@ -6,6 +6,6 @@ mkdir build
 
 npm install
 
-npm build-js
+npm run build-js
 
 npm start
