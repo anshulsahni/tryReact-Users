@@ -10,12 +10,16 @@ class SignUp extends React.Component {
 
   constructor(){
     super();
+    // this.checkLoggedIn();
     this.fireBaseConnectionRef;
     this.state={
       users:[]
     }
   }
 
+  componentWillMount(){
+    this.checkLoggedIn();
+  }
   //syncing the state with firebase
   componentDidMount(){
     this.fireBaseConnectionRef=base.syncState('users',{
@@ -33,11 +37,20 @@ class SignUp extends React.Component {
         userName:this.refs.userName.value,
         password:this.refs.password.value
       })
-      alert("New User Added");
+      alert("New User Added")
     }
     else{
       alert("Please enter all the fields");
     }
+  }
+
+  //function to check logged in status
+  checkLoggedIn(){
+    if(localStorage.userToken){
+      this.history.pushState(null,'/');
+      return true;
+    }
+    return false;
   }
 
   //function to add User
@@ -78,5 +91,5 @@ class SignUp extends React.Component {
     base.removeBinding(this.fireBaseConnectionRef);
   }
 }
-
+ReactMixin.onClass(SignUp,History);
 export default SignUp;

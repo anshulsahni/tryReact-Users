@@ -11,14 +11,16 @@ var base=Rebase.createClass("https://tryreact.firebaseio.com");
 class App extends React.Component {
 
   constructor(){
-    if(localStorage.userToken){
-      super();
-      this.fireBaseConnectionRef;
-      this.state={
-        users:[],
-        loggedInUser:{}
-      }
+    super();
+    this.fireBaseConnectionRef;
+    this.state={
+      users:[],
+      loggedInUser:{}
     }
+  }
+
+  componentWillMount(){
+    this.checkLoggedIn();
   }
 
   //syncing the state with firebase
@@ -35,14 +37,23 @@ class App extends React.Component {
     event.preventDefault();
     if(localStorage.userToken){
       localStorage.removeItem("userToken");
-      this.history.pushState(null,'/signIn');
     }
+    this.history.pushState(null,'/signIn');
   }
 
   //function to assign user object the details
   setLoggedInUser(){
     this.state.loggedInUser=_.findWhere(this.state.users,{userName:localStorage.userToken});
     this.setState({loggedInUser:this.state.loggedInUser})
+  }
+
+  //checks if any user logged in
+  checkLoggedIn(){
+    if(!localStorage.userToken){
+      this.history.pushState(null,'/signIn');
+      return false;
+    }
+    return true;
   }
 
   //elements rendered by this component

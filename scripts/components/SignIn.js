@@ -18,6 +18,10 @@ class SignIn extends React.Component{
     }
   }
 
+  componentWillMount(){
+    this.checkLoggedIn();
+  }
+
   //syncing the state with firebase
   componentDidMount(){
       this.fireBaseConnectionRef=base.syncState('users',{
@@ -44,7 +48,19 @@ class SignIn extends React.Component{
         this.history.pushState(null,'/');
       }
     }
-  }  
+    else{
+      alert("Please provide user name and password")
+    }
+  }
+
+  //function to check logged in status
+  checkLoggedIn(){
+    if(localStorage.userToken){
+      this.history.pushState(null,'/');
+      return false;
+    }
+    return true;
+  }
 
   render(){
     return(
