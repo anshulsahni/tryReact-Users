@@ -15,11 +15,13 @@ class Auth{
     })
   }
 
+  //function calls firebase api unauth to log out the user
   signOut(callback){
     baseRef.unauth();
     callback();
   }
 
+  //get authData of the logged in user
   getLoggedInUser(){
     return baseRef.getAuth();
   }

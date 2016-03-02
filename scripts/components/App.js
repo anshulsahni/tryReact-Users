@@ -22,12 +22,7 @@ class App extends React.Component{
     super();
   }
 
-  //function to signOut
-  signOut(){
-
-  }
-
-  //redirect if users is logged In
+  //redirect to index if users is logged In
   redirectIfLoggedIn(nextState,replace){
     var user=auth.getLoggedInUser();
     if(user){
@@ -37,7 +32,7 @@ class App extends React.Component{
     }
   }
 
-  //redirect if users is not logged In
+  //redirect to sign_in if users is not logged In
   redirectIfNotLoggedIn(nextState,replace){
     var user=auth.getLoggedInUser();
     if(!user){

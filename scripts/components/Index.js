@@ -1,6 +1,9 @@
 import React from 'react';
 import autobind from 'autobind-decorator';
 
+
+//index component
+//loaded when the user is logged in
 @autobind
 class Index extends React.Component {
 
@@ -8,7 +11,7 @@ class Index extends React.Component {
     super();
     this.state={
       name:"",
-      dataLoaded:false
+      dataLoaded:false            //flag to know if the data is being loaded from firebase or already loaded
 
     }
   }
@@ -20,7 +23,7 @@ class Index extends React.Component {
       this.props.appHistory.push("sign_in")
     })
   }
-
+  //getting the details of the logged in user after the components are rendered
   componentDidMount(){
     this.props.users.getUserDetails((user)=>{
       this.setState({name:user.name,dataLoaded:true})

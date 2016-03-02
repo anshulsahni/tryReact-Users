@@ -4,12 +4,14 @@ import autobind from 'autobind-decorator';
 
 
 //sign up component
+//it handles the sign up view of the users
 @autobind
 class SignUp extends React.Component {
 
   constructor(){
     super();
     this.state={
+      //state showing the responses related to sign up
       signUpStatus:""
     }
   }

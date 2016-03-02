@@ -4,12 +4,14 @@ import autobind from 'autobind-decorator';
 
 
 //sign in Component
+//it handles all the sign in view of the app
 @autobind
 class SignIn extends React.Component{
 
   constructor(){
     super();
     this.state={
+      //state to show the responses related to signing in
       signInStatus:""
     }
   }
@@ -29,9 +31,9 @@ class SignIn extends React.Component{
           alert(error.toString());
         }
         else{
-            this.setState({signInStatus:""})
-            this.refs.signInForm.reset();
-            this.props.appHistory.push("/")
+          this.setState({signInStatus:""})
+          this.refs.signInForm.reset();
+          this.props.appHistory.push("/")
         }
       });
     }
