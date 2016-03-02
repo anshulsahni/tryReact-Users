@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router';
 import autobind from 'autobind-decorator';
 
 
@@ -40,7 +41,7 @@ class SignUp extends React.Component {
             </fieldset>
             <fieldset className='form-group'>
                <button className='btn btn-danger' onClick={this.signUpClickEventHandler}>Sign Me Up...</button>
-               <a className='btn btn-danger pull-md-right' href='#/sign_in'>Already a User??</a>
+               <Link className='btn btn-danger pull-md-right' to='/sign_in'>Already a User??</Link>
             </fieldset>
           </form>
         </div>

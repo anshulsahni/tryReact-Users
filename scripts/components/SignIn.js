@@ -1,5 +1,7 @@
 import React from 'react';
+import {Link} from 'react-router';
 import autobind from 'autobind-decorator';
+
 
 //sign in Component
 @autobind
@@ -7,9 +9,6 @@ class SignIn extends React.Component{
 
   constructor(){
     super();
-    this.state={
-      signInError:""
-    }
   }
 
   //function to handle to onClick event on signIn button
@@ -35,7 +34,7 @@ class SignIn extends React.Component{
         </div>
         <div className='card-block'>
           <form>
-            <small>{this.state.signInError}</small>
+            <small></small>
             <fieldset className='form-group'>
               <input type='text' className='form-control' ref='email' placeholder='Enter Your User Name'/>
             </fieldset>
@@ -44,7 +43,7 @@ class SignIn extends React.Component{
             </fieldset>
             <fieldset className='form-group'>
               <button className='btn btn-danger' onClick={this.signInClickEventHandler}>Sign In...</button>
-              <a className='btn btn-danger pull-md-right' href='#/sign_up'>Not a user??</a>
+              <Link className='btn btn-danger pull-md-right' to='/sign_up'>Not a user??</Link>
             </fieldset>
           </form>
         </div>
