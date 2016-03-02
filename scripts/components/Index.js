@@ -6,34 +6,52 @@ class Index extends React.Component {
 
   constructor(){
     super();
+    this.state={
+      name:"",
+      dataLoaded:false
+
+    }
   }
 
   //function to handle onClick event on log out button
   logOutClickEventHandler(event){
     event.preventDefault();
-    this.props.signOut();
+    this.props.auth.signOut(()=>{
+      this.props.appHistory.push("sign_in")
+    })
+  }
+
+  componentDidMount(){
+    this.props.users.getUserDetails((user)=>{
+      this.setState({name:user.name,dataLoaded:true})
+    });
   }
 
   //elements rendered by this component
   render(){
     return (
       <div className='card'>
-        <div className='card-block'>
-          <small>Welcome...</small>
-          <h4 className='card-title'>
-            
-          </h4>
-        </div>
-        <div className='card-block'>
-          Blah...Blah...Blah...
-        </div>
-        <div className='card-block'>
-          <div>
-            <form>
-              <button className='btn btn-danger' onClick={this.logOutClickEventHandler}>Log Out...</button>
-            </form>
+        <div className={this.state.dataLoaded?"":"hidden-xs-up"}>
+          <div className='card-block' >
+            <small>Welcome...</small>
+            <h4 className='card-title'>
+              {this.state.name}
+            </h4>
+          </div>
+          <div className='card-block'>
+            Blah...Blah...Blah...
+          </div>
+          <div className='card-block'>
+            <div>
+              <form>
+                <button className='btn btn-danger' onClick={this.logOutClickEventHandler}>Log Out...</button>
+              </form>
+            </div>
           </div>
         </div>
+        <h1 className={this.state.dataLoaded?"hidden-xs-up":""}>
+          Loading...
+        </h1>
       </div>
     )
   }

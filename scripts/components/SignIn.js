@@ -9,6 +9,9 @@ class SignIn extends React.Component{
 
   constructor(){
     super();
+    this.state={
+      signInStatus:""
+    }
   }
 
   //function to handle to onClick event on signIn button
@@ -19,10 +22,21 @@ class SignIn extends React.Component{
       password:this.refs.password.value
     }
     if(credentials.email && credentials.password){
-      this.props.signIn(credentials);
+      this.setState({signInStatus:"Sending Data..."})
+      this.props.auth.signIn(credentials,(error,userData)=>{
+        if(error){
+          this.setState({signInStatus:error.toString()})
+          alert(error.toString());
+        }
+        else{
+            this.setState({signInStatus:""})
+            this.refs.signInForm.reset();
+            this.props.appHistory.push("/")
+        }
+      });
     }
     else{
-      this.setState({signInError:"Please specify username and password to log In"})
+      this.setState({signInStatus:"Error:Please specify username and password to log In"})
     }
   }
 
@@ -33,8 +47,8 @@ class SignIn extends React.Component{
           <h4 className='card-title'>Sign In</h4>
         </div>
         <div className='card-block'>
-          <form>
-            <small></small>
+          <form ref="signInForm">
+            <p className='text-danger'>{this.state.signInStatus}</p>
             <fieldset className='form-group'>
               <input type='text' className='form-control' ref='email' placeholder='Enter Your User Name'/>
             </fieldset>

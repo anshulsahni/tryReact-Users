@@ -16,8 +16,12 @@ class Users{
     })
   }
 
-  getUserDetails(userId,callback){
-    console.log(baseRef.child(userId).child("name"))
+  getUserDetails(callback){
+    var user = baseRef.getAuth();
+    baseRef.fetch(user.uid,{
+      context:this,
+      then:callback
+    });
   }
 }
 
