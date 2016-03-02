@@ -1,6 +1,5 @@
 import React from 'react';
-import ReactMixin from 'react-mixin';
-import {Route,Router,useRouterHistory,RouterContext} from 'react-router';
+import {Route,Router,useRouterHistory} from 'react-router';
 import {createHashHistory} from 'history';
 import autobind from 'autobind-decorator';
 
