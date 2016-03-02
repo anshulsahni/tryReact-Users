@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "http-server -p 3000",
-    "build-js": "browserify 'scripts/main.jsx' -t [ babelify --presets [ es2015 react ] ] -o 'build/bundle.js'"
+    "build-js": "browserify 'scripts/main.jsx' -t [ babelify --presets [ es2015 react ] --plugins [transform-decorators-legacy] ] -o 'build/bundle.js'"
   },
   "author": "",
   "license": "ISC",
@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "babel": "^6.5.2",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-preset-es2015": "^6.5.0",
     "babel-preset-react": "^6.5.0",
     "babelify": "^7.2.0",

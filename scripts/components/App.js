@@ -1,91 +1,121 @@
 import React from 'react';
-import _ from 'underscore';
-import {History} from 'react-router';
 import ReactMixin from 'react-mixin';
+import {Route,Router,useRouterHistory} from 'react-router';
+import {createHashHistory} from 'history';
+import autobind from 'autobind-decorator';
 
-//for firebase
-import Rebase from 're-base';
-var base=Rebase.createClass("https://tryreact.firebaseio.com");
+import Users from '../models/Users';
+var users = new Users();
 
-//  root component
-class App extends React.Component {
+import Auth from '../models/Auth';
+var auth=new Auth();
+
+import Index from './Index';
+import SignIn from './SignIn';
+import SignUp from './SignUp';
+
+const appHistory = useRouterHistory(createHashHistory)({ queryKey: false })
+//root component for app containing the routes
+@autobind
+class App extends React.Component{
 
   constructor(){
     super();
-    this.fireBaseConnectionRef;
     this.state={
-      users:[],
-      loggedInUser:{}
+      loggedInUser:{},
+      signUpError:"",
+      signUpStatus:"",
+      signInError:"",
+      signInStatus:""
     }
   }
 
-  componentWillMount(){
-    this.checkLoggedIn();
-  }
-
-  //syncing the state with firebase
-  componentDidMount(){
-    this.fireBaseConnectionRef=base.syncState('users',{
-      context:this,
-      state:'users',
-      then:this.setLoggedInUser
+  //calls sign in function from auth class
+  //also sets the state of logged in user of this component
+  signIn(credentials){
+    this.setState({signInStatus:"Sending Data..."});
+    auth.signIn(credentials,(error,authData)=>{
+      if(error){
+        this.setState({signInError:error.toString(),signInError:""})
+        alert(error.toString());
+      }
+      else{
+          this.setState({signInError:"",signInStatus:""})
+          appHistory.push("/")
+      }
     })
   }
 
-  //function to handle onClick event on log out button
-  logOutClickEventHandler(event){
-    event.preventDefault();
-    if(localStorage.userToken){
-      localStorage.removeItem("userToken");
+  //calls signUp function from auth class
+  signUp(userDetails){
+    this.setState({signUpStatus:"Sending Data...",signUpError:""});
+    users.addUser(userDetails,(error,userData)=>{
+      if(error){
+        if(error.code==="EMAIL_TAKEN"){
+          this.setState({signUpError:"Email Already In Use",signUpStatus:""});
+          alert("signUpError: Email Already In Use")
+        }
+        else if(error.code==="INVALID_EMAIL"){
+          this.setState({signUpError:"Invalid Email",signUpStatus:""});
+          alert("sign Up error: Invalid Email");
+        }
+      }
+      else{
+        this.setState({signUpStatus:"User Added",signUpError:""});
+        alert("User Added");
+      }
+    });
+  }
+
+  //function to signOut
+  signOut(){
+    auth.signOut(()=>{
+      appHistory.push("sign_in")
+    })
+  }
+
+  //redirect if users is logged In
+  redirectIfLoggedIn(nextState,replace){
+    var user=auth.getLoggedInUser();
+    if(user){
+      replace({
+        pathname:"/"
+      })
     }
-    this.history.pushState(null,'/signIn');
   }
 
-  //function to assign user object the details
-  setLoggedInUser(){
-    this.state.loggedInUser=_.findWhere(this.state.users,{userName:localStorage.userToken});
-    this.setState({loggedInUser:this.state.loggedInUser})
-  }
-
-  //checks if any user logged in
-  checkLoggedIn(){
-    if(!localStorage.userToken){
-      this.history.pushState(null,'/signIn');
-      return false;
+  //redirect if users is not logged In
+  redirectIfNotLoggedIn(nextState,replace){
+    var user=auth.getLoggedInUser();
+    if(!user){
+      replace({
+        pathname:"/sign_in"
+      })
     }
-    return true;
   }
 
-  //elements rendered by this component
+  //function to create component with specified props
+  createComponent(Component,props){
+    return React.createClass({
+      render:function(){
+        console.log(props)
+        return <Component {...props}/>
+      }
+    })
+  }
+
   render(){
-    return (
-      <div className='card'>
-        <div className='card-block'>
-          <small>Welcome...</small>
-          <h4 className='card-title'>
-            {this.state.loggedInUser.name}
-          </h4>
-        </div>
-        <div className='card-block'>
-          Blah...Blah...Blah...
-        </div>
-        <div className='card-block'>
-          <div>
-            <form>
-              <button className='btn btn-danger' onClick={this.logOutClickEventHandler.bind(this)}>Log Out...</button>
-            </form>
-          </div>
-        </div>
+
+    return(
+      <div>
+        <Router history={appHistory}>
+            <Route path="/" onEnter={this.redirectIfNotLoggedIn} component={this.createComponent(Index,{signOut:this.signOut})} />
+            <Route path="/sign_up" onEnter={this.redirectIfLoggedIn} component={this.createComponent(SignUp,{signUp:this.signUp,signUpError:this.state.signUpError})} />
+            <Route path="/sign_in" onEnter={this.redirectIfLoggedIn} component={this.createComponent(SignIn,{signIn:this.signIn})} />
+        </Router>
       </div>
     )
   }
-
-  //removing listeners from firebase
-  componentWillUnmount(){
-    base.removeBinding(this.fireBaseConnectionRef);
-  }
 }
-
-ReactMixin.onClass(App,History);
 
 export default App;
